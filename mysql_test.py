@@ -28,7 +28,7 @@ db = MySQLdb.connect(host="monolith-prod", # your host, usually localhost
                      user="monolith", # your username
                       passwd="monolith", # your password
                       db="Events") # name of the data base
-
+db.autocommit(True)
 # you must create a Cursor object. It will let
 #  you execute all the queries you need
 cur = db.cursor() 
@@ -40,14 +40,12 @@ alarmClear()
 while True:
 
   print "Querying Monolith"
-  result = cur.execute("select AlarmID, Node, AlarmGroup, SubAlarmGroup, Severity, Summary from Alarm where severity >= 5 and ack =0 and Score >= 50 and (Custom3 != 'QA' and Custom3 != 'DEV') and Department != 'Desktop' and SubAlarmGroup not like '%beta%'")
+  cur.execute("select AlarmID, Node, AlarmGroup, SubAlarmGroup, Severity, Summary from Alarm where severity >= 5 and ack =0 and Score >= 50 and (Custom3 != 'QA' and Custom3 != 'DEV') and Department != 'Desktop' and SubAlarmGroup not like '%beta%'")
 
-  print type(result)
-  print result
   # print all the first cell of all the rows
   maxSeverity=0
   #print dir(cur)
-  for row in result.fetchall() :
+  for row in cur.fetchall() :
     inAlarm=True
     print "%s\t%s\t%s\t%s\t%s" % (row[0],row[1],row[2],row[3],row[4])
     if row[4] > maxSeverity:
@@ -56,10 +54,11 @@ while True:
 
   #print cur.rowcount
   #print maxSeverity
-  if result.rowcount == 0 and inAlarm==True:
+  if cur.rowcount == 0 and inAlarm==True:
     inAlarm=False
     print "No Critical Alerts found"
     alarmClear()
 
+  #db.commit()
 
   time.sleep(10)
