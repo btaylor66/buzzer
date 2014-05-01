@@ -38,8 +38,7 @@ inAlarm=False
 alarmClear()
 
 while True:
-
-  print "Querying Monolith"
+  #print "Querying Monolith"
   cur.execute("select AlarmID, Node, AlarmGroup, SubAlarmGroup, Severity, Summary from Alarm where severity >= 5 and ack =0 and Score >= 50 and (Custom3 != 'QA' and Custom3 != 'DEV') and Department != 'Desktop' and SubAlarmGroup not like '%beta%'")
 
   # print all the first cell of all the rows
