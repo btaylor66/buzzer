@@ -1,9 +1,7 @@
 #!c:\python27\python.exe -u
 import MySQLdb
-import time
 from subprocess import call
-
-
+import time
 
 # Use all the SQL you like
 print "Querying Monolith Prod"
@@ -39,25 +37,30 @@ alarmClear()
 
 while True:
   #print "Querying Monolith"
-  cur.execute("select AlarmID, Node, AlarmGroup, SubAlarmGroup, Severity, Summary from Alarm where severity >= 5 and ack =0 and Score >= 50 and (Custom3 != 'QA' and Custom3 != 'DEV') and Department != 'Desktop' and SubAlarmGroup not like '%beta%'")
+  #hour=time.localtime(time.time())
+  hour=int(time.strftime("%H"))-6
+  #print hour
+  if (hour >= 7 and hour <=16):
+    #print "During Trading Day"
+    cur.execute("select AlarmID, Node, AlarmGroup, SubAlarmGroup, Severity, Summary from Alarm where severity >= 5 and ack =0 and Score >= 50 and (Custom3 != 'QA' and Custom3 != 'DEV') and Department != 'Desktop' and SubAlarmGroup not like '%beta%'")
 
-  # print all the first cell of all the rows
-  maxSeverity=0
-  #print dir(cur)
-  for row in cur.fetchall() :
-    inAlarm=True
-    print "%s\t%s\t%s\t%s\t%s" % (row[0],row[1],row[2],row[3],row[4])
-    if row[4] > maxSeverity:
-        maxSeverity=row[4]
-    alarmCritical()
+    # print all the first cell of all the rows
+    maxSeverity=0
+    #print dir(cur)
+    for row in cur.fetchall() :
+      inAlarm=True
+      print "%s\t%s\t%s\t%s\t%s" % (row[0],row[1],row[2],row[3],row[4])
+      if row[4] > maxSeverity:
+          maxSeverity=row[4]
+      alarmCritical()
 
-  #print cur.rowcount
-  #print maxSeverity
-  if cur.rowcount == 0 and inAlarm==True:
-    inAlarm=False
-    print "No Critical Alerts found"
-    alarmClear()
+    #print cur.rowcount
+    #print maxSeverity
+    if cur.rowcount == 0 and inAlarm==True:
+      inAlarm=False
+      print "No Critical Alerts found"
+      alarmClear()
 
-  #db.commit()
+    #db.commit()
 
   time.sleep(10)
