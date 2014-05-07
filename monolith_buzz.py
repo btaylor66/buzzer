@@ -67,5 +67,6 @@ while True:
 
     #db.commit()
   else:
+    cur.execute("select now()")
     print "%s Not Valid Time Window" % now
   sleep(10)
