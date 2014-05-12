@@ -11,6 +11,16 @@ def alarmCritical():
   call("USBCMDAP 0 0 101 22 50 50", shell=True)
   call("USBCMDAP 0 0 101 20 0 2", shell=True)
   call("USBCMDAP 0 0 102 70 1 16 255 20 20", shell=True)
+  sleep(1)
+  call("usbcmdap 0 0 102 70 0 16 255 100 100", shell=True)
+  sleep(1)
+  call("USBCMDAP 0 0 102 70 1 16 255 20 20", shell=True)
+  sleep(1)
+  call("usbcmdap 0 0 102 70 0 16 255 100 100", shell=True)
+  sleep(1)
+  call("USBCMDAP 0 0 102 70 1 16 255 20 20", shell=True)
+  sleep(1)
+  call("usbcmdap 0 0 102 70 0 16 255 100 100", shell=True)
 
 def alarmMajor():
   call("USBCMDAP 0 0 101 22 50 50", shell=True)
@@ -69,4 +79,5 @@ while True:
   else:
     cur.execute("select now()")
     print "%s Not Valid Time Window" % now
+    alarmClear()
   sleep(10)
